@@ -28,6 +28,14 @@ mongoose.connection.on('open', function() {
   });
 });
 
+const UserSchema = new mongoose.Schema({
+  name:String,
+  email:String,
+  password:String,
+  role:String,
+  image:String
+});
+
 const ProjectSchema = new mongoose.Schema({
   title:String,
   image:String,
@@ -51,6 +59,7 @@ const AnnouncementSchema = new mongoose.Schema({
 
 const Project = mongoose.model("Project",ProjectSchema);
 const Announcement = mongoose.model("Announcement",AnnouncementSchema);
+const Users = mongoose.model("Users",UserSchema);
 
 app.get("/projects", function(req, res) {
   Project.find({},function(err,values){
@@ -68,6 +77,17 @@ app.get("/projects/:projectName", function(req, res) {
 app.get("/announcements", function(req, res) {
   Announcement.find({},function(err,values){
     res.send(values);
+  });
+});
+
+app.get("/users/:name/:password", function(req, res) {
+  Users.find({name:req.params.name,password:req.params.password},function(err,values){
+    if(err || values.length === 0){
+      res.send("false");
+    }
+    else{
+      res.send("true");
+    }
   });
 });
 
